@@ -9,3 +9,70 @@ df1=pd.DataFrame({ 'var1':1.0,
                   'var3':["test","train","test","train"], 
                   'var4':'coins'})
 df1
+
+#以list形式按行提供数据
+df1=pd.DataFrame(data=[[1,"test"],[2,"train"],[3,"test"],[4,"train"]],
+                 columns=['var2','var3'])
+df1
+
+1.2 读入文本格式数据文件
+df2=pd.read_csv("D:\Python\pandas\PythonData\\univ.csv",encoding="gbk")
+df2
+
+df2=pd.read_table("D:\Python\pandas\PythonData\\univ.csv",sep=',',encoding="gbk")
+df2
+
+1.3 读入EXCEL文件
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+df2
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx")
+df2
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name=0)
+df2
+
+1.4 读入统计软件数据集
+1.4.1 读入SAS/Stata数据文件
+df4=pd.read_sas("D:\Python\pandas\PythonData\\air.sas7bdat")
+df4
+
+1.4.2 读入SPSS数据文件
+import savReaderWriter as savRW
+spssfile=savRW.SavReader('D:\Python\pandas\PythonData\\air.sav',ioUtf8=True).all()
+spssfile
+
+1.5 读入数据库文件
+1.5.1 配置所需的程序包和驱动
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.5.2 读入数据列表
