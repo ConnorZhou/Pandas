@@ -1,0 +1,127 @@
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+print(pd.__version__)#显示当前Pandas版本号
+
+7 文件级别的数据管理
+7.1 数据拆分
+
+7.1.1 标记数据拆分组
+
+df2 = pd.read_excel("D:\Python\pandas\PythonData\\高校信息.xlsx",sheet_name="full")#导入数据
+df2
+
+df2g=df2.groupby('类型')
+df2g
+
+df2g.groups
+
+df2.describe()
+
+df2g.describe()
+
+df3g=df2.groupby(['类型','所在省份'])
+
+df3g.mean()#可以使用tab调用语法参考
+
+7.1.2 基于拆分进行筛选
+筛选出其中一组
+
+df2g.get_group('农林').mean()#我们把拆分好的数据里面符合‘农林’条件的这一组给筛选出来
+                             #mean（）：计算相应的均值
+
+筛选出所需的列
+
+df2g['总分'].describe()
+
+df2g['名次'].max()
+
+7.2 分组汇总
+
+7.2.1 使用agg函数进行汇总
+
+df2g.学校名称.agg('count')
+
+df2.agg('median')
+
+df2g.agg(['mean','median'])#既要计算均数，也要计算中位数
+
+#引用非内置函数
+import numpy as np
+print(df2.总分.agg(np.sum))
+df2g.总分.agg(np.sum)
+
+#引用自定义函数
+def mymean(x):
+    return x.mean()
+df2.总分.agg(mymean)
+
+df2g.agg(mymean)
+
+7.2.2 其他分组汇总方法
+
+pd.crosstab(df2.办学方向,df2.类型)
+
+7.3 重复测量数据的格式转换
+
+7.3.1 转化为最简格式
+
+df3=pd.read_excel("D:\Python\pandas\PythonData\儿童生长研究.xlsx",index_col=[0,2])
+df3
+
+df3s=df3.stack()
+df3s
+
+7.3.2 长宽型格式的自由转换
+
+df3s.unstack(1)
+
+df3s.unstack([1,2])
+
+#数据转置
+df3.T
+
+7.3.3 其他可用于格式转换的命令
+7.4 多个数据源的合并
+
+df21=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='part1')
+df22=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='part2')
+df21=df21.sort_values('总分')#升序排列
+df2=df21.append(df22)
+df2
+
+df2=df21.append([df22,df22[:10],df22[40:]])#用list实现多个数据源的合并
+df2
+
+7.4.2 数据的横向合并
+
+df2a=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='var6')
+df2b=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='var3')
+pd.merge(df2a,df2b)
+
+pd.merge(df2a,df2b[:20])
+
+df2ai=df2a.set_index('学校名称')
+df2bi=df2b.set_index('学校名称')
+pd.merge(df2ai,df2bi,left_index=True,right_index=True)
+
+df2ai=df2a.set_index('学校名称')
+df2bi=df2b
+pd.merge(df2ai,df2bi,left_index=True,right_on='学校名称')
+
+7.4.3 Concat命令简介
+
+df21=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='part1')
+df22=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='part2')
+pd.concat([df21,df22])
+
+pd.concat([df21,df22],keys=['df21','df22'])
+
+# 横向合并
+df2a=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='var6')
+df2b=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name='var3')
+pd.concat([df2a,df2b],axis=1)
+
+df2ai=df2a.set_index('学校名称')
+df2bi=df2b.set_index('学校名称')
+pd.concat([df2ai,df2bi],axis=1)
+
