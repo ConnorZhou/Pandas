@@ -1,0 +1,83 @@
+#设定系统环境
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+pd.__version__#显示当前Pandas版本号
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+df2
+
+3 变量列的基本操作
+3 变量列的基本操作
+
+print(df2)
+#一个完整的数据浏览显示
+
+df2
+#只有在notebook中才可直接用“df2”，其他平台必须用print（df2）
+
+#数据框的基本信息
+df2.info()
+
+#浏览前几条记录
+df2.head()
+#默认前5条记录
+
+#浏览前3条
+df2.head(3)
+
+#浏览最后几条记录
+df2.tail()
+
+3.2 重命名列
+
+#给出变量名/列名
+df2.columns
+
+df2.columns=['名次2', '学校名称2', '总分2', '类型2', '所在省份2', '所在城市2', '办学方向2', '主管部门2']
+df2
+
+#只修改制定列名
+df3=df2.rename(columns={'名次2':'名次','学校名称2':'学校名称'},
+               inplace=False #是否直接替换原数据
+              )
+df3
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+df2
+
+3.3 筛选变量列
+
+df2.名次
+
+df2['名次']
+
+df2[  ['名次']  ]
+
+df2[['名次','总分']]
+
+df2[['所在省份','名次','总分']]
+
+3.4 删除变量列
+
+df.drop( index/columns=准备删除的行/列标签，多个时用列表形式提供 inplace=False：是否直接更改原数据框 ）
+
+df2.drop(columns=['名次','所在城市'])
+
+3.5 变量类型的变换
+3.5.1 Pandas支持的数据类型
+
+df2.dtypes
+
+3.5.2 在不同数据类型间的转换
+
+df2.astype('str')
+#把df2中的所有变量列全部转换成字符串
+
+df2.astype('str').dtypes
+
+df2.名次.astype('str')
+#把df2中‘名次’这一列转换成字符串
+
+df2.astype('int',errors='ignore').dtypes
+#把df2中变量都转换成int，由于我们已经知道变量的格式，因此在全部都转换成int的时候会出错，errors表示略过
+
