@@ -1,0 +1,38 @@
+#设定系统环境
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+pd.__version__#显示当前Pandas版本号
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+df2
+
+2 保存数据
+2.1 保存数据至外部文件
+2.1.1 保存为CSV格式
+df2.to_csv('temp1.txt')
+#导出的数据在  C:\Users\Administrator\A Kenan Python\Pandas
+
+#第一行不写相应的变量名
+df2.to_csv('temp2.txt',header=False)
+#导出的数据在  C:\Users\Administrator\A Kenan Python\Pandas
+#默认的流水索引也被写进来了
+
+#不要默认的流水索引
+df2.to_csv('temp3.txt',header=False,index=False)
+
+#只保存“名次”、“总分”两个变量
+df2.to_csv('temp4.txt',columns=['名次','总分'] ,index=False)
+
+#只保存“名次”、“总分”两个变量，保存命名为“名次2”、“总分2”
+df2.to_csv('temp5.txt',columns=['名次','总分'],header=['名次2','总分2'] ,index=False)
+
+2.1.2 保存为EXCEL格式
+df2.to_excel('temp1.xlsx')
+#导出的数据在  C:\Users\Administrator\A Kenan Python\Pandas
+
+#不要索引，命名为“data”
+df2.to_excel('temp2.xlsx',index=False,sheet_name='data')
+
+
+
+2.2 保存数据至数据库
