@@ -1,0 +1,144 @@
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+print(pd.__version__)#显示当前Pandas版本号
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+
+def m_readdata(filename,startline=2):
+    return pd.read_csv(filename,header=startline,usecols=[0,2,3,4,5,6,7,9,10])
+bj08 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2008_HourlyPM2.5_created20140325.csv")
+bj09 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2009_HourlyPM25_created20140709.csv")
+bj10 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2010_HourlyPM25_created20140709.csv")
+bj11 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2011_HourlyPM25_created20140709.csv")
+bj12 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2012_HourlyPM2.5_created20140325.csv")
+bj13 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2013_HourlyPM2.5_created20140325.csv")
+bj14 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2014_HourlyPM25_created20150203.csv")
+bj15 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2015_HourlyPM25_created20160201.csv",3)
+bj16 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2016_HourlyPM25_created20170201.csv",3)
+
+bj=bj08.append([bj09,bj10,bj11,bj12,bj13,bj14,bj15,bj16])
+
+10 数据的图形展示
+
+10.1 配置绘图系统环境
+
+df2['总分'].plot.box(title='总分的箱图分布',ylim=(60,80))
+#不做任何配置的情况
+
+#图形在Pandas页面同步显示的问题
+%matplotlib inline
+
+df2['总分'].plot.box(title='总分的箱图分布',ylim=(60,80))
+#已经配置的情况
+
+# 中文字符兼容问题
+import matplotlib
+matplotlib.rcParams['font.sans-serif']=['SimHei']
+
+#绘图功能的进一步美化和功能增强句，参考http://seaborn.pydata.org/
+import seaborn
+seaborn.set_style("whitegrid")
+#注意有中文兼容问题，需要重新导入中文设定！
+
+#进一步在一些细节上的美化和优化
+import matplotlib.pyplot as plt
+plt.figure()
+
+10.2 绘图命令基本框架
+
+df2['总分'].plot.box(title='总分的箱图分布',ylim=(60,80))
+
+#考察过去一段时间的数据分布
+bj08[-100:].Value.plot(figsize=(12,8))
+#把过去的100个数据取出来，figsize：图形的大小尺寸，plot：默认画线
+
+bj.groupby(bj.Year).Value.plot()#有无seaborn修饰时的结果不同
+#bj.groupby(bj.Year)：对北京的所有PM数据按照年份进行分组，分组以后再对PM2.5的值进行绘图
+
+10.3 条图
+
+需要先自行完成数据汇总，绘图函数只能完成绘图工作
+
+10.3.1 简单条图
+
+#条图
+pd.value_counts(df2.类型).plot.bar()
+
+#水平条图
+pd.value_counts(df2.类型).plot.barh()
+
+10.3.2 复式条图
+
+行索引构成大分组，变量列构成小分组
+
+import numpy as np
+dfnew=pd.DataFrame(np.random.rand(10,4),columns=['a','b','c','d'])
+print(dfnew)
+dfnew.plot.bar()
+#np.random.rand(10,4),columns=['a','b','c','d']:生成一个10*4的随机数组，把这个矩阵转换成数据框，列命名为：a,b,c,d
+#dfnew.plot.bar()：在dfnew基础上绘制相应条图
+
+10.3.3 分段条图
+
+dfnew.plot.bar(stacked=True)
+
+10.4 直方图
+
+10.4.1 简单直方图
+
+#直方图
+df2.总分.plot.hist(bins=20)
+
+10.4.2 直方图图组
+
+df2.总分.hist(by=df2.类型,bins=20)
+
+10.5 饼图
+
+注意是每行代表一个饼块的数据结构，因此需要先自行汇总好变量频数
+
+10.5.1 简单饼图
+
+df2.类型.value_counts().plot.pie()
+#对于类型做一个频数汇总，绘制饼图
+
+pd.value_counts(df2.类型).plot.pie()
+
+df2.loc[:9,['名次','总分']].plot.pie(subplots=True,figsize=(8,4))
+#取df2前9个的'名次’，‘总分’
+#subplots=True,figsize=(8,4)：由于有两个变量，则要求分图组来分别绘制
+
+10.5.2 Semicircle
+
+当数值总和小于1时，绘制的是Semicircle
+
+pd.Series([0.1,0.2,0.1,0.3],index=['a','b','c','d']).plot.pie(figsize=(6,6))
+
+10.6 箱图
+
+df2.plot.box(vert=False)
+
+df2.boxplot(by='类型')
+#分图组来画
+
+10.7 散点图
+
+10.7.1 简单散点图
+
+df2.plot.scatter('总分','名次')
+
+10.7.2 对散点图进行修饰
+
+df2.plot.scatter(x='总分',y='名次',c='名次')
+#c：color，控制散点颜色的变量列，名次越小，颜色越浅
+
+df2.plot.scatter(x='总分',y='名次',s=df2.名次)
+#s：控制散点的大小（size），名次越小，散点越小
+
+10.7.3 重叠散点图
+
+使用matplotlib的ax对象进行图形叠加
+
+ax=df2.plot.scatter(x='总分',y='名次',color='DarkBlue',label='Group 1');
+df2.plot.scatter(x='名次',y='总分',color='DarkGreen',label='Group 2',ax=ax);
+
