@@ -1,0 +1,111 @@
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+print(pd.__version__)#显示当前Pandas版本号
+
+8 数据清洗
+
+def m_readdata(filename,startline=2):
+    return pd.read_csv(filename,header=startline,usecols=[0,2,3,4,5,6,7,9,10])
+bj08 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2008_HourlyPM2.5_created20140325.csv")
+bj09 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2009_HourlyPM25_created20140709.csv")
+bj10 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2010_HourlyPM25_created20140709.csv")
+bj11 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2011_HourlyPM25_created20140709.csv")
+bj12 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2012_HourlyPM2.5_created20140325.csv")
+bj13 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2013_HourlyPM2.5_created20140325.csv")
+bj14 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2014_HourlyPM25_created20150203.csv")
+bj15 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2015_HourlyPM25_created20160201.csv",3)
+bj16 = m_readdata("D:\Python\pandas\PythonData\PM25\Beijing_2016_HourlyPM25_created20170201.csv",3)
+
+bj=bj08.append([bj09,bj10,bj11,bj12,bj13,bj14,bj15,bj16])
+bj
+
+8.1 处理缺失值
+
+#导入数据
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+df2
+
+df2.名次.iloc[:3]=None
+
+df2.名次.isna()
+
+import numpy as np
+df2.名次.iloc[:5]=np.nan
+df2.名次.isna()
+
+None 和 np.nan的核心区别：能否进行比较
+
+None==None
+
+np.nan==np.nan
+
+pd.options.mode.use_inf_as_na
+
+8.1.2 处理自定义缺失值
+
+df2.所在省份.replace("北京",np.nan)
+
+#设定为None后的效果完全不同
+df2.所在省份.replace("北京",None)
+
+df2na=df2.replace(["北京",100],[np.nan,np.nan])#后面的中括号可以简写
+df2na
+
+8.1.3 标识缺失值案例
+
+标识缺失值
+
+df2na.replace(["北京",100],[np.nan,np.nan]).isna()
+#把“北京”、“100”全部替换成缺失值，然后检查df2na里面哪些是缺失的
+
+检查多个单元格的取值是否指定数值
+
+df2na.isna().any(1)
+#检擦所有列的单元格
+
+df2na[df2na.isna().any(1)]
+#把有缺失值的那些数据行重新引用出来
+
+8.1.4 填充缺失值
+在构建新索引的同时完成缺失值的填充任务
+
+df2.replace(["北京",100],[np.nan,np.nan]).fillna('未知')
+#把“北京“100”全部替换成缺失值，再把这些缺失值换成“未知”
+
+df2.replace(["北京",100,1,2,3],np.nan).fillna(df2.mean())
+
+df2.mean()
+
+8.1.5 删除缺失值
+
+df=pd.DataFrame([[np.nan,2,np.nan,0],
+                 [3,4,np.nan,1],
+                 [np.nan,np.nan,np.nan,5]],
+                columns=list('ABCD'))
+df
+
+df.dropna(axis=1,how='all')
+#按照列来进行删除，如果有一列全部是缺失值才考虑删除
+
+8.2 数据查重
+
+8.2.1 标识出重复的行
+
+df2['dup']=df2.duplicated(['类型','所在省份'])
+df2
+
+利用索引进行重复行标识
+
+df2.set_index(['类型','所在省份']).index.duplicated()
+
+8.2.2 直接删除重复的行
+
+df2.drop_duplicates(['类型','所在省份'])
+
+df2.drop_duplicates(['类型','所在省份'],
+                    keep=False    #keep='first'/'last'/False(是否直接删除有重复的所有记录)
+                   )
+利用查重标识结果直接删除                  
+
+df2[~df2.duplicated(['类型','所在省份'])]
+
