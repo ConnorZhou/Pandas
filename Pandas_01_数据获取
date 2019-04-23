@@ -1,0 +1,11 @@
+#设定系统环境
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+pd.__version__#显示当前Pandas版本号
+
+1.1 新建数据框
+df1=pd.DataFrame({ 'var1':1.0,
+                  'var2':[1,2,3,4],
+                  'var3':["test","train","test","train"], 
+                  'var4':'coins'})
+df1
