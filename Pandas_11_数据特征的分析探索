@@ -1,0 +1,58 @@
+import pandas as pd
+pd.options.display.max_rows=10#设定自由列表输出最多为10行
+print(pd.__version__)#显示当前Pandas版本号
+
+df2=pd.read_excel("D:\Python\pandas\PythonData\高校信息.xlsx",sheet_name="full")
+
+11 数据特征的分析探索
+
+11.1 数值变量的基本描述
+
+df2.describe()
+
+df2.describe(include='all')
+#include:要求纳入分析的变量类型白名单
+#all：全部纳入
+
+11.2 分类变量的频数统计
+
+pd.value_counts(df2.类型)
+
+pd.value_counts(df2.类型,normalize=True)
+
+pd.value_counts(df2.类型,sort=False)
+
+df2.总分.value_counts(bins=10)
+
+11.3 交叉表/数据透视表
+
+df2.pivot_table(index=['所在省份','主管部门'],columns='类型',values='总分',aggfunc=sum)
+
+pd.crosstab([df2['所在省份'],df2.主管部门],df2.类型,values=df2.总分,aggfunc=sum)
+
+11.4 常用的假设检验方法
+
+from scipy import stats as ss
+#t检验
+ss.ttest_ind(df2.名次,df2.总分)#各组分别占一列
+
+from scipy import stats as ss
+#t检验
+ss.ttest_ind(df2.名次,df2.总分)[0] #各组分别占一列，调用t值
+
+from scipy import stats as ss
+#t检验
+ss.ttest_ind(df2.名次,df2.总分)[1] #各组分别占一列，调用p值
+
+#ANOVA
+ss.f_oneway(df2.名次,df2.总分)#各组分别占一列
+
+#卡方检验
+ss.chisquare(df2.类型.value_counts())
+
+#相关系数
+ss.pearsonr(df2.名次,df2.总分)
+
+#简单线性回归
+ss.linregress(df2.名次,df2.总分)
+
